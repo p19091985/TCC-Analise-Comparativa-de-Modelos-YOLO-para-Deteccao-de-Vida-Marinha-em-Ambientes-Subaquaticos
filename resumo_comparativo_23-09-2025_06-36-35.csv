@@ -1,0 +1,3 @@
+modelo,Dataset,Base_Model,Status,mAP50_95,mAP50,Precision,Recall,F1_Score,Latency_ms,Training_Time_Min,Output_Dir,Error
+YOLOv5n_640px_100e,unificacaoDosOceanos,yolov5n.pt,Completed,0.4266,0.6268,0.6663,0.5888,0.6252,0.0000,146.4963,/home/patrik/Documentos/TCC-Análise Comparativa de Modelos YOLO para Detecção de Vida Marinha em Ambientes Subaquáticos/runs/detect/YOLOv5n_640px_100e_on_unificacaoDosOceanos_23-09-2025_06-36-35,N/A
+YOLO11n_640px_100e,unificacaoDosOceanos,yolo11n.pt,Completed,0.4373,0.6355,0.7115,0.5623,0.6282,0.0000,146.7059,/home/patrik/Documentos/TCC-Análise Comparativa de Modelos YOLO para Detecção de Vida Marinha em Ambientes Subaquáticos/runs/detect/YOLO11n_640px_100e_on_unificacaoDosOceanos_23-09-2025_06-36-35,N/A

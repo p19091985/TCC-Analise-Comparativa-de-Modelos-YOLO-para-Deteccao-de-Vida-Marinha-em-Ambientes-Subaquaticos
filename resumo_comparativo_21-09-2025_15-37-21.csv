@@ -1,0 +1,2 @@
+modelo,Dataset,Base_Model,Status,mAP50_95,mAP50,Precision,Recall,F1_Score,Latency_ms,Training_Time_Min,Output_Dir,Error
+RT-DETR-L_640px_100e,aquarium_pretrain,rtdetr-l.pt,Completed,0.4875,0.7807,0.8137,0.7303,0.7697,29.1533,40.0792,/home/patrik/Documentos/TCC-Análise Comparativa de Modelos YOLO para Detecção de Vida Marinha em Ambientes Subaquáticos/runs/detect/RT-DETR-L-0.001_640px_100e_on_aquarium_pretrain_21-09-2025_15-37-21,N/A
