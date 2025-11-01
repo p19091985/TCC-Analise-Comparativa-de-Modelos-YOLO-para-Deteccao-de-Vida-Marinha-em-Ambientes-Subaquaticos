@@ -1,3 +1,4 @@
+altair==5.5.0
 anyio==4.10.0
 argon2-cffi==25.1.0
 argon2-cffi-bindings==25.1.0
@@ -8,9 +9,12 @@ attrs==25.3.0
 babel==2.17.0
 beautifulsoup4==4.13.5
 bleach==6.2.0
+blinker==1.9.0
+cachetools==6.2.1
 certifi==2025.8.3
 cffi==2.0.0
 charset-normalizer==3.4.3
+click==8.3.0
 comm==0.2.3
 contourpy==1.3.3
 cycler==0.12.1
@@ -23,6 +27,8 @@ filelock==3.19.1
 fonttools==4.60.0
 fqdn==1.5.1
 fsspec==2025.9.0
+gitdb==4.0.12
+GitPython==3.1.45
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
@@ -83,6 +89,7 @@ nvidia-nvtx-cu12==12.8.90
 opencv-python==4.12.0.88
 packaging==25.0
 pandas==2.3.2
+pandas-stubs==2.3.2.250926
 pandocfilters==1.5.1
 parso==0.8.5
 pexpect==4.9.0
@@ -96,7 +103,9 @@ protobuf==6.32.1
 psutil==7.1.0
 ptyprocess==0.7.0
 pure_eval==0.2.3
+pyarrow==21.0.0
 pycparser==2.23
+pydeck==0.9.1
 Pygments==2.19.2
 pyparsing==3.2.4
 python-dateutil==2.9.0.post0
@@ -116,15 +125,19 @@ scipy==1.16.2
 Send2Trash==1.8.3
 setuptools==80.9.0
 six==1.17.0
+smmap==5.0.2
 sniffio==1.3.1
 soupsieve==2.8
 stack-data==0.6.3
+streamlit==1.51.0
 sv_ttk==2.6.1
 sympy==1.14.0
+tenacity==9.1.2
 terminado==0.18.1
 text-unidecode==1.3
 tinycss2==1.4.0
 tkhtmlview==0.3.1
+toml==0.10.2
 torch==2.8.0
 torchvision==0.23.0
 tornado==6.5.2
@@ -139,6 +152,7 @@ ultralytics==8.3.202
 ultralytics-thop==2.0.17
 uri-template==1.3.0
 urllib3==2.5.0
+watchdog==6.0.0
 wcwidth==0.2.13
 webcolors==24.11.1
 webencodings==0.5.1

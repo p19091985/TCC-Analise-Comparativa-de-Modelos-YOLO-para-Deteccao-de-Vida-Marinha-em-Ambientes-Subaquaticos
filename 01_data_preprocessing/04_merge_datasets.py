@@ -1,66 +1,27 @@
-# -*- coding: utf-8 -*-
-
+                       
 """
-Arquivo de Bloco 6 de Funções: Unificação Inteligente de Datasets YOLO
-
-Objetivo: Analisar múltiplos datasets na pasta 'dataset_descompactado',
-unificá-los em um único dataset mestre chamado 'unificacaoDosOceanos',
-e de forma inteligente, mesclar as classes e remapear os arquivos de anotação.
+Módulo 1, Etapa 4: Unificação inteligente de datasets YOLO.
+Gera um dataset 'unificacaoDosOceanos' combinando múltiplos datasets de origem
+e cria um arquivo data.yaml com caminhos relativos corretos para portabilidade.
 """
-
 import os
 import sys
 import logging
-import datetime
 import shutil
 import yaml
-from collections import defaultdict
 
-# --- CONFIGURAÇÃO GLOBAL ---
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-SOURCE_DATASETS_DIR = os.path.join(BASE_DIR, 'dataset_descompactado')
+ROOT_DIR_FOR_IMPORT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(ROOT_DIR_FOR_IMPORT)
+
+from config.paths import UNZIPPED_DIR, ROOT_DIR
+from utils.logger_config import setup_logging
+
 UNIFIED_DATASET_NAME = 'unificacaoDosOceanos'
-UNIFIED_DATASET_DIR = os.path.join(SOURCE_DATASETS_DIR, UNIFIED_DATASET_NAME)
-LOGS_DIR = os.path.join(BASE_DIR, 'logs')  # Pasta de logs centralizada
+UNIFIED_DATASET_DIR = os.path.join(UNZIPPED_DIR, UNIFIED_DATASET_NAME)
 
-# --- HEURÍSTICA DE UNIFICAÇÃO DE CLASSES (AUTÔNOMA) ---
-# A ÚNICA REGRA DE FUSÃO A SER APLICADA, CONFORME SOLICITADO.
 CLASS_MERGE_MAP = {
     'stingray': 'ray'
-    # Adicionar outras regras de fusão aqui, se necessário no futuro.
 }
-
-
-def setup_logging() -> logging.Logger:
-    """
-    CORREÇÃO: Configura o logger para salvar em 'logs/nomeDoScript_timestamp.log'.
-    """
-    os.makedirs(LOGS_DIR, exist_ok=True)
-    script_name = os.path.splitext(os.path.basename(__file__))[0]
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-
-    log_filename = f"{script_name}_{timestamp}.log"
-    log_filepath = os.path.join(LOGS_DIR, log_filename)
-
-    log_format = "%(asctime)s - %(levelname)s - %(message)s"
-
-    logger = logging.getLogger('DatasetUnifierLogger')
-    logger.setLevel(logging.INFO)
-
-    if logger.hasHandlers():
-        logger.handlers.clear()
-
-    file_handler = logging.FileHandler(log_filepath, encoding='utf-8')
-    file_handler.setFormatter(logging.Formatter(log_format))
-    logger.addHandler(file_handler)
-
-    stream_handler = logging.StreamHandler(sys.stdout)
-    stream_handler.setFormatter(logging.Formatter(log_format))
-    logger.addHandler(stream_handler)
-
-    logger.info(f"O log desta execução será salvo em: {log_filepath}")
-    return logger
-
 
 def create_unified_structure(logger: logging.Logger):
     """Cria a estrutura de diretórios para o dataset unificado."""
@@ -75,14 +36,13 @@ def create_unified_structure(logger: logging.Logger):
         os.makedirs(os.path.join(UNIFIED_DATASET_DIR, split, 'labels'), exist_ok=True)
     logger.info("Estrutura de diretórios criada com sucesso.")
 
-
 def process_and_copy_files(source_dataset_name: str, split: str, local_class_map: dict, master_class_map: dict,
                            logger: logging.Logger):
     """Copia imagens e remapeia arquivos de anotação para um subconjunto."""
     logger.info(f"  Processando subconjunto '{split}' de '{source_dataset_name}'...")
 
-    source_images_dir = os.path.join(SOURCE_DATASETS_DIR, source_dataset_name, split, 'images')
-    source_labels_dir = os.path.join(SOURCE_DATASETS_DIR, source_dataset_name, split, 'labels')
+    source_images_dir = os.path.join(UNZIPPED_DIR, source_dataset_name, split, 'images')
+    source_labels_dir = os.path.join(UNZIPPED_DIR, source_dataset_name, split, 'labels')
 
     if not os.path.exists(source_images_dir):
         logger.warning(f"    Diretório de imagens não encontrado em '{source_images_dir}'. Pulando.")
@@ -128,24 +88,25 @@ def process_and_copy_files(source_dataset_name: str, split: str, local_class_map
 
     logger.info(f"    Concluído: {copied_count} imagens e suas anotações foram processadas e copiadas.")
 
-
-def executar_unificacao(logger: logging.Logger):
+def main():
     """Função principal que executa a lógica de unificação dos datasets."""
+    logger = setup_logging('DatasetUnifierLogger', __file__)
+
     try:
         logger.info("=" * 60)
         logger.info("INICIANDO SCRIPT DE UNIFICAÇÃO DE DATASETS YOLO")
         logger.info("=" * 60)
 
-        if not os.path.exists(SOURCE_DATASETS_DIR):
-            logger.error(f"ERRO: Diretório de origem '{SOURCE_DATASETS_DIR}' não foi encontrado. Abortando.")
+        if not os.path.exists(UNZIPPED_DIR):
+            logger.error(f"ERRO: Diretório de origem '{UNZIPPED_DIR}' não foi encontrado. Abortando.")
             return
 
         logger.info("--- Etapa 1: Analisando datasets de origem e unificando classes ---")
         source_datasets_info = []
         all_class_names = set()
 
-        dataset_names_to_process = [d for d in sorted(os.listdir(SOURCE_DATASETS_DIR)) if
-                                    os.path.isdir(os.path.join(SOURCE_DATASETS_DIR, d))]
+        dataset_names_to_process = [d for d in sorted(os.listdir(UNZIPPED_DIR)) if
+                                    os.path.isdir(os.path.join(UNZIPPED_DIR, d))]
 
         if UNIFIED_DATASET_NAME in dataset_names_to_process:
             logger.info(
@@ -153,7 +114,7 @@ def executar_unificacao(logger: logging.Logger):
             dataset_names_to_process.remove(UNIFIED_DATASET_NAME)
 
         for dataset_name in dataset_names_to_process:
-            yaml_path = os.path.join(SOURCE_DATASETS_DIR, dataset_name, 'data.yaml')
+            yaml_path = os.path.join(UNZIPPED_DIR, dataset_name, 'data.yaml')
             if os.path.exists(yaml_path):
                 logger.info(f"Lendo '{yaml_path}'...")
                 with open(yaml_path, 'r', encoding='utf-8') as f:
@@ -188,20 +149,22 @@ def executar_unificacao(logger: logging.Logger):
         logger.info("\n--- Etapa 3: Gerando arquivo 'data.yaml' para o dataset unificado ---")
         final_yaml_path = os.path.join(UNIFIED_DATASET_DIR, 'data.yaml')
 
-        relative_path_to_unified_dir = os.path.relpath(UNIFIED_DATASET_DIR, BASE_DIR)
+        relative_path_to_unified_dir = os.path.relpath(UNIFIED_DATASET_DIR, ROOT_DIR)
 
         final_yaml_content = {
-            'path': f"./{relative_path_to_unified_dir.replace(os.sep, '/')}",
-            'train': os.path.join('train', 'images'),
-            'val': os.path.join('valid', 'images'),
-            'test': os.path.join('test', 'images'),
+                                                                        
+            'path': relative_path_to_unified_dir.replace(os.sep, '/'),
+                                                       
+            'train': 'train/images',
+            'val': 'valid/images',
+            'test': 'test/images',
             'nc': len(master_class_list),
             'names': master_class_list
         }
 
         with open(final_yaml_path, 'w', encoding='utf-8') as f:
             yaml.dump(final_yaml_content, f, sort_keys=False, default_flow_style=False)
-        logger.info(f"Arquivo '{final_yaml_path}' gerado com sucesso.")
+        logger.info(f"Arquivo '{final_yaml_path}' gerado com sucesso com caminho relativo.")
 
     except Exception as e:
         logger.critical(f"Ocorreu um erro fatal e inesperado durante a execução: {e}", exc_info=True)
@@ -209,13 +172,6 @@ def executar_unificacao(logger: logging.Logger):
         logger.info("\n" + "=" * 60)
         logger.info("PROCESSO DE UNIFICAÇÃO DE DATASETS FINALIZADO")
         logger.info("=" * 60)
-
-
-def main():
-    """Ponto de entrada para execução autônoma do script."""
-    logger = setup_logging()
-    executar_unificacao(logger)
-
 
 if __name__ == "__main__":
     main()

@@ -1,64 +1,18 @@
-# -*- coding: utf-8 -*-
-
+                       
 """
-Arquivo de Bloco 4 de Funções: Redução de Datasets para Testes Rápidos
-
-Objetivo: Reduzir em 90% a quantidade de imagens e anotações de cada
-dataset na pasta 'dataset_descompactado', facilitando a execução de testes
-e análises rápidas.
-
-Lógica Inteligente: A redução não é puramente aleatória. O script garante
-que a amostra final de 10% contenha pelo menos um exemplo de cada classe
-definida no arquivo data.yaml, tornando o subconjunto mais representativo.
-
-AVISO: Este script MODIFICA OS DATASETS DIRETAMENTE. É recomendado fazer
-um backup da pasta 'dataset_descompactado' antes da execução.
+Módulo 1, Etapa 3 (Opcional): Redução de datasets para testes rápidos.
+(Baseado no arquivo original: reduzir_dataset.py)
 """
-
 import os
 import random
 import sys
 import logging
-import datetime
 from typing import Dict, Set
 
-# --- CONFIGURAÇÃO GLOBAL ---
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_DIR = os.path.join(BASE_DIR, 'dataset_descompactado')
-LOGS_DIR = os.path.join(BASE_DIR, 'logs')  # Pasta de logs centralizada
-REDUCTION_FACTOR = 1
+from config.paths import UNZIPPED_DIR
+from utils.logger_config import setup_logging
 
-
-def setup_logging() -> logging.Logger:
-    """
-    CORREÇÃO: Configura o logger para salvar em 'logs/nomeDoScript_timestamp.log'.
-    """
-    os.makedirs(LOGS_DIR, exist_ok=True)
-    script_name = os.path.splitext(os.path.basename(__file__))[0]
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-
-    log_filename = f"{script_name}_{timestamp}.log"
-    log_filepath = os.path.join(LOGS_DIR, log_filename)
-
-    log_format = "%(asctime)s - %(levelname)s - %(message)s"
-
-    logger = logging.getLogger('DatasetReducerLogger')
-    logger.setLevel(logging.INFO)
-
-    if logger.hasHandlers():
-        logger.handlers.clear()
-
-    file_handler = logging.FileHandler(log_filepath, encoding='utf-8')
-    file_handler.setFormatter(logging.Formatter(log_format))
-    logger.addHandler(file_handler)
-
-    stream_handler = logging.StreamHandler(sys.stdout)
-    stream_handler.setFormatter(logging.Formatter(log_format))
-    logger.addHandler(stream_handler)
-
-    logger.info(f"O log desta execução será salvo em: {log_filepath}")
-    return logger
-
+REDUCTION_FACTOR = 0.1
 
 def get_class_map(labels_path: str) -> Dict[int, Set[str]]:
     """
@@ -90,7 +44,6 @@ def get_class_map(labels_path: str) -> Dict[int, Set[str]]:
                 except (ValueError, IndexError):
                     continue
     return class_map
-
 
 def reduce_split(dataset_path: str, split_name: str, logger: logging.Logger):
     """
@@ -161,23 +114,25 @@ def reduce_split(dataset_path: str, split_name: str, logger: logging.Logger):
         f"  Redução concluída para '{split_name}': {images_deleted_count} imagens e {labels_deleted_count} anotações removidas.")
     logger.info(f"  -> Total final: {final_count} imagens.")
 
-
-def executar_reducao(logger: logging.Logger):
+def main():
     """
     Função principal que executa a lógica de redução dos datasets.
     """
+    logger = setup_logging('DatasetReducerLogger', __file__)
+
     try:
         logger.info("=" * 60)
         logger.info("INICIANDO SCRIPT DE REDUÇÃO INTELIGENTE DE DATASETS")
         logger.info(f"Os datasets serão reduzidos para manter aproximadamente {REDUCTION_FACTOR * 100:.0f}% dos dados.")
+        logger.warning("ESTE SCRIPT MODIFICA OS DATASETS DIRETAMENTE.")
         logger.info("=" * 60)
 
-        if not os.path.exists(DATASET_DIR):
-            logger.error(f"ERRO: Diretório de datasets '{DATASET_DIR}' não encontrado.")
+        if not os.path.exists(UNZIPPED_DIR):
+            logger.error(f"ERRO: Diretório de datasets '{UNZIPPED_DIR}' não encontrado.")
             return
 
-        for dataset_name in sorted(os.listdir(DATASET_DIR)):
-            dataset_path = os.path.join(DATASET_DIR, dataset_name)
+        for dataset_name in sorted(os.listdir(UNZIPPED_DIR)):
+            dataset_path = os.path.join(UNZIPPED_DIR, dataset_name)
             if not os.path.isdir(dataset_path):
                 continue
 
@@ -199,13 +154,6 @@ def executar_reducao(logger: logging.Logger):
         logger.info("\n" + "=" * 60)
         logger.info("PROCESSO DE REDUÇÃO DE DATASETS FINALIZADO")
         logger.info("=" * 60)
-
-
-def main():
-    """Ponto de entrada para execução autônoma do script."""
-    logger = setup_logging()
-    executar_reducao(logger)
-
 
 if __name__ == "__main__":
     main()

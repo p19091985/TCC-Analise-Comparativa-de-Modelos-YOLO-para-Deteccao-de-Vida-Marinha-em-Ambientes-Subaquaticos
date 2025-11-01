@@ -1,6 +1,4 @@
 path: ./dataset_descompactado/FishInvSplit
-
-
 names:
 - bolbometopon_muricatum
 - chaetodontidae
@@ -17,7 +15,6 @@ names:
 - sea_cucumber
 - crown_of_thorns
 - lobster
-
 nc: 15
 train: train/images
 val: valid/images

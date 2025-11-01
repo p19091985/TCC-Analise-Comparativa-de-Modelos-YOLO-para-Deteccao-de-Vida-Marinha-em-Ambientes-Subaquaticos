@@ -1,2 +1,0 @@
-modelo,Dataset,Base_Model,Status,mAP50_95,mAP50,Precision,Recall,F1_Score,Latency_ms,Training_Time_Min,Output_Dir,Error
-RT-DETR-L_640px_100e,unificacaoDosOceanos,rtdetr-l.pt,Completed,0.5390,0.7717,0.7920,0.7412,0.7658,36.5933,849.4103,/home/patrik/Documentos/TCC-Análise Comparativa de Modelos YOLO para Detecção de Vida Marinha em Ambientes Subaquáticos/runs/detect/RT-DETR-L-0.001_640px_100e_on_unificacaoDosOceanos_23-09-2025_22-51-52,N/A
