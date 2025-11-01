@@ -328,7 +328,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
             title='Visão Geral: mAP50-95 vs. Velocidade de Inferência (Média)'
         ).interactive()
         # --- CORREÇÃO DE AVISO ---
-        st.altair_chart(chart_map_vs_speed, use_container_width=True)
+        st.altair_chart(chart_map_vs_speed)
 
         col1, col2 = st.columns(2)
 
@@ -343,7 +343,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 title='Ranking de mAP50-95 (Média)'
             )
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(chart_avg_map, use_container_width=True)
+            st.altair_chart(chart_avg_map)
 
             # Gráfico 3: Boxplot de mAP50-95
             chart_box_map = alt.Chart(df).mark_boxplot().encode(
@@ -354,7 +354,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 title='Distribuição de mAP50-95 por Modelo (todos datasets)'
             )
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(chart_box_map, use_container_width=True)
+            st.altair_chart(chart_box_map)
 
         with col2:
             # Gráfico 4: Ranking de Velocidade (Média)
@@ -367,7 +367,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 title='Ranking de Velocidade de Inferência (Média)'
             )
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(chart_avg_speed, use_container_width=True)
+            st.altair_chart(chart_avg_speed)
 
             # Gráfico 5: Boxplot de Velocidade
             chart_box_speed = alt.Chart(df).mark_boxplot().encode(
@@ -378,7 +378,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 title='Distribuição de Inferência (ms) por Modelo (todos datasets)'
             )
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(chart_box_speed, use_container_width=True)
+            st.altair_chart(chart_box_speed)
 
     with tab_dataset:
         st.subheader("Análise Detalhada por Dataset")
@@ -399,7 +399,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 title=f'mAP50-95 vs. Velocidade em "{selected_dataset}"'
             ).interactive()
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(chart_ds_map_vs_speed, use_container_width=True)
+            st.altair_chart(chart_ds_map_vs_speed)
 
             col1, col2 = st.columns(2)
 
@@ -412,7 +412,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                     tooltip=['Modelo', 'mAP50-95', 'mAP50', 'Inferencia (ms)']
                 ).properties(title=f'mAP50-95 em "{selected_dataset}"')
                 # --- CORREÇÃO DE AVISO ---
-                st.altair_chart(chart_ds_map95, use_container_width=True)
+                st.altair_chart(chart_ds_map95)
 
                 # Gráfico 8: mAP50 por Dataset
                 chart_ds_map50 = alt.Chart(df_filtered).mark_bar().encode(
@@ -422,7 +422,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                     tooltip=['Modelo', 'mAP50-95', 'mAP50', 'Inferencia (ms)']
                 ).properties(title=f'mAP50 em "{selected_dataset}"')
                 # --- CORREÇÃO DE AVISO ---
-                st.altair_chart(chart_ds_map50, use_container_width=True)
+                st.altair_chart(chart_ds_map50)
 
             with col2:
                 # Gráfico 9: Precision vs Recall
@@ -435,7 +435,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                     tooltip=['Modelo', 'Métrica', 'Valor']
                 ).properties(title=f'Precision vs. Recall em "{selected_dataset}"')
                 # --- CORREÇÃO DE AVISO ---
-                st.altair_chart(chart_ds_pr, use_container_width=True)
+                st.altair_chart(chart_ds_pr)
 
                 # Gráfico 10: Velocidade por Dataset
                 chart_ds_speed = alt.Chart(df_filtered).mark_bar().encode(
@@ -445,7 +445,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                     tooltip=['Modelo', 'Inferencia (ms)']
                 ).properties(title=f'Velocidade em "{selected_dataset}"')
                 # --- CORREÇÃO DE AVISO ---
-                st.altair_chart(chart_ds_speed, use_container_width=True)
+                st.altair_chart(chart_ds_speed)
 
     with tab_model:
         st.subheader("Análise Detalhada por Modelo")
@@ -464,7 +464,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 tooltip=['dataset_nome', 'mAP50-95', 'mAP50', 'Inferencia (ms)']
             ).properties(title=f'Performance de {selected_model}: mAP50-95')
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(chart_model_map95, use_container_width=True)
+            st.altair_chart(chart_model_map95)
 
             col1, col2 = st.columns(2)
             with col1:
@@ -476,7 +476,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                     tooltip=['dataset_nome', 'mAP50-95', 'mAP50']
                 ).properties(title=f'Performance de {selected_model}: mAP50')
                 # --- CORREÇÃO DE AVISO ---
-                st.altair_chart(chart_model_map50, use_container_width=True)
+                st.altair_chart(chart_model_map50)
 
                 # Gráfico 13: Precision por Modelo
                 chart_model_p = alt.Chart(df_filtered).mark_bar().encode(
@@ -486,7 +486,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                     tooltip=['dataset_nome', 'Precision']
                 ).properties(title=f'Performance de {selected_model}: Precision')
                 # --- CORREÇÃO DE AVISO ---
-                st.altair_chart(chart_model_p, use_container_width=True)
+                st.altair_chart(chart_model_p)
 
             with col2:
                 # Gráfico 14: Recall por Modelo
@@ -497,7 +497,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                     tooltip=['dataset_nome', 'Recall']
                 ).properties(title=f'Performance de {selected_model}: Recall')
                 # --- CORREÇÃO DE AVISO ---
-                st.altair_chart(chart_model_r, use_container_width=True)
+                st.altair_chart(chart_model_r)
 
                 # Gráfico 15: Velocidade por Modelo
                 chart_model_speed = alt.Chart(df_filtered).mark_bar().encode(
@@ -507,7 +507,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                     tooltip=['dataset_nome', 'Inferencia (ms)']
                 ).properties(title=f'Velocidade de {selected_model} por Dataset')
                 # --- CORREÇÃO DE AVISO ---
-                st.altair_chart(chart_model_speed, use_container_width=True)
+                st.altair_chart(chart_model_speed)
 
     with tab_matrix:
         st.subheader("Matrizes e Heatmaps")
@@ -527,7 +527,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 title='Heatmap: Performance mAP50-95 (Modelo vs. Dataset)'
             )
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(heatmap_map95, use_container_width=True)
+            st.altair_chart(heatmap_map95)
 
             # Gráfico 17: Heatmap de Velocidade
             heatmap_speed = alt.Chart(pivot_long[pivot_long['Metrica'] == 'Inferencia (ms)']).mark_rect().encode(
@@ -539,7 +539,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 title='Heatmap: Velocidade de Inferência (Modelo vs. Dataset)'
             )
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(heatmap_speed, use_container_width=True)
+            st.altair_chart(heatmap_speed)
         else:
             st.warning("Heatmaps requerem o 'Modo Orientador', mas os dados pivotados não puderam ser gerados.")
 
@@ -562,7 +562,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
             color=alt.value('black')
         )
         # --- CORREÇÃO DE AVISO ---
-        st.altair_chart(heatmap_corr + text_corr, use_container_width=True)
+        st.altair_chart(heatmap_corr + text_corr)
 
     with tab_dist:
         st.subheader("Distribuição das Métricas (Todos os Resultados)")
@@ -575,7 +575,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 y=alt.Y('count()', title='Contagem')
             ).properties(title='Distribuição de mAP50-95')
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(hist_map95, use_container_width=True)
+            st.altair_chart(hist_map95)
 
             # Gráfico 20: Histograma Precision
             hist_p = alt.Chart(df).mark_bar().encode(
@@ -583,7 +583,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 y=alt.Y('count()', title='Contagem')
             ).properties(title='Distribuição de Precision')
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(hist_p, use_container_width=True)
+            st.altair_chart(hist_p)
 
         with col2:
             # Gráfico 21: Histograma Inferencia (ms)
@@ -592,7 +592,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 y=alt.Y('count()', title='Contagem')
             ).properties(title='Distribuição de Velocidade de Inferência')
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(hist_speed, use_container_width=True)
+            st.altair_chart(hist_speed)
 
             # Gráfico 22: Histograma Recall
             hist_r = alt.Chart(df).mark_bar().encode(
@@ -600,7 +600,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                 y=alt.Y('count()', title='Contagem')
             ).properties(title='Distribuição de Recall')
             # --- CORREÇÃO DE AVISO ---
-            st.altair_chart(hist_r, use_container_width=True)
+            st.altair_chart(hist_r)
 
 # ### Funções da Aba de Tabela de Dados (MODIFICADA) ###
 
