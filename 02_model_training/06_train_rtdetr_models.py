@@ -19,7 +19,6 @@ except ImportError:
     print("[AÇÃO] Por favor, ative seu ambiente e instale as dependências: pip install torch ultralytics pyyaml")
     sys.exit(1)
 
-# MODIFICAÇÃO: Adicionado RUNS_DIR
 from config.paths import UNZIPPED_DIR, REPORTS_DIR, ROOT_DIR, RUNS_DIR
 from config.training_params import RTDETR_CONFIG
 from utils.logger_config import setup_logging
@@ -34,7 +33,7 @@ class PipelineTreinamentoRTDETR:
         self.base_dataset_dir = Path(UNZIPPED_DIR)
         self.reports_dir = Path(REPORTS_DIR)
         self.root_dir = Path(ROOT_DIR)
-        # MODIFICAÇÃO: Adicionado self.runs_dir
+                                               
         self.runs_dir = Path(RUNS_DIR)
         self.timestamp = datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
         self.logger = setup_logging('RTDETR_Training_Logger', __file__)
@@ -130,7 +129,7 @@ class PipelineTreinamentoRTDETR:
                 lr0=self.config['LEARNING_RATE'],
                 device=device,
                 imgsz=self.config['IMG_SIZE'],
-                # MODIFICAÇÃO: Adicionado 'project' para salvar em output/runs/detect
+                                                                                     
                 project=str(self.runs_dir),
                 name=run_name,
                 exist_ok=True,
@@ -176,10 +175,7 @@ class PipelineTreinamentoRTDETR:
         report_path = self.reports_dir / report_filename
         self.logger.info(f"Gerando relatório de resumo em '{report_path}'...")
 
-        # --- INÍCIO DA CORREÇÃO ---
-        # Garante que o diretório de relatórios exista
         os.makedirs(self.reports_dir, exist_ok=True)
-        # --- FIM DA CORREÇÃO ---
 
         header = self.resultados[0].keys()
 

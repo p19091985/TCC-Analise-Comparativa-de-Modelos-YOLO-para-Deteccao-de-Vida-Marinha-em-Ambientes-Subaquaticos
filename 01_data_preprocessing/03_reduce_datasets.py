@@ -12,7 +12,7 @@ from typing import Dict, Set
 from config.paths import UNZIPPED_DIR
 from utils.logger_config import setup_logging
 
-REDUCTION_FACTOR = 0.1
+REDUCTION_FACTOR = 1
 
 def get_class_map(labels_path: str) -> Dict[int, Set[str]]:
     """

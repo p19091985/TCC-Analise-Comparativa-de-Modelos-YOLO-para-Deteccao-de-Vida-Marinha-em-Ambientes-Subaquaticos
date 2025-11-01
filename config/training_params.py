@@ -11,7 +11,6 @@ YOLO_CONFIG = {
     "BATCH_SIZE": 16,
     "OPTIMIZER": "Adam",
     "DATASETS_TO_TRAIN": ['aquarium_pretrain','FishInvSplit','unificacaoDosOceanos'],
-    #"DATASETS_TO_TRAIN": ['aquarium_pretrain'],
 
     "TRAINING_JOBS": [
        {'modelo': 'YOLOv5n', 'base_model': 'yolov5n.pt'},

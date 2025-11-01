@@ -21,11 +21,7 @@ RUNS_DIR = os.path.join(OUTPUT_DIR, 'runs', 'detect')
 
 REPORTS_DIR = os.path.join(OUTPUT_DIR, 'reports')
 
-# --- INÍCIO DA MODIFICAÇÃO ---
-# Novo diretório para salvar os resultados da validação (test set)
 EVAL_DIR = os.path.join(OUTPUT_DIR, 'evaluations')
-# --- FIM DA MODIFICAÇÃO ---
-
 
 def create_project_structure():
     """
@@ -38,7 +34,7 @@ def create_project_structure():
     os.makedirs(LOGS_DIR, exist_ok=True)
     os.makedirs(RUNS_DIR, exist_ok=True)
     os.makedirs(REPORTS_DIR, exist_ok=True)
-    # --- INÍCIO DA MODIFICAÇÃO ---
-    os.makedirs(EVAL_DIR, exist_ok=True) # Garante que a nova pasta seja criada
-    # --- FIM DA MODIFICAÇÃO ---
+                                   
+    os.makedirs(EVAL_DIR, exist_ok=True)                                       
+                                
     print("Estrutura de diretórios pronta.")

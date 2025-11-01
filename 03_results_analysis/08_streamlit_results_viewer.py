@@ -19,7 +19,6 @@ from datetime import datetime
 from typing import List, Tuple
 import altair as alt
 
-# --- Configuração de Paths (igual ao script original) ---
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(ROOT_DIR)
 
@@ -28,10 +27,6 @@ try:
 except ImportError:
     st.error("Erro Crítico: Não foi possível importar 'config.paths'. Verifique se o script está na pasta '03_results_analysis/'.")
     st.stop()
-# --- Fim da Configuração de Paths ---
-
-
-# ### Funções de Geração de HTML (Sem alterações na lógica interna) ###
 
 def generate_orientador_html(export_df: pd.DataFrame, raw_df: pd.DataFrame) -> str:
     """
@@ -46,7 +41,6 @@ def generate_orientador_html(export_df: pd.DataFrame, raw_df: pd.DataFrame) -> s
 
         html_parts = []
 
-        # Cabeçalho HTML e Estilos
         html_parts.append(f"""<!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -70,19 +64,16 @@ def generate_orientador_html(export_df: pd.DataFrame, raw_df: pd.DataFrame) -> s
         <tr>
             <th rowspan="2" style="vertical-align: middle;">Modelo</th>""")
 
-        # Cabeçalho dos datasets
         datasets = sorted(raw_df['dataset_nome'].unique())
         for dataset in datasets:
             html_parts.append(f'            <th colspan="{len(metricas)}">{dataset}</th>')
         html_parts.append("        </tr>\n        <tr>")
 
-        # Cabeçalho das métricas (repetido para cada dataset)
         for dataset in datasets:
             for metrica in metricas:
                 html_parts.append(f'            <th>{metrica}</th>')
         html_parts.append("        </tr>\n    </thead>\n    <tbody>")
 
-        # Dados dos modelos
         modelos = sorted(export_df.index)
         for modelo in modelos:
             html_parts.append(f'        <tr>\n            <td class="model-cell">{modelo}</td>')
@@ -93,15 +84,15 @@ def generate_orientador_html(export_df: pd.DataFrame, raw_df: pd.DataFrame) -> s
                         if pd.isna(valor):
                             html_parts.append('            <td>-</td>')
                         else:
-                            # Lógica para destacar o melhor valor
+                                                                 
                             valores_metrica = [export_df.loc[m, (dataset, metrica)]
                                              for m in modelos
                                              if not pd.isna(export_df.loc[m, (dataset, metrica)])]
 
                             if valores_metrica:
-                                if metrica == 'Inferencia (ms)':  # Menor é melhor
+                                if metrica == 'Inferencia (ms)':                  
                                     melhor_valor = min(valores_metrica)
-                                else:  # Maior é melhor
+                                else:                  
                                     melhor_valor = max(valores_metrica)
 
                                 if abs(valor - melhor_valor) < 0.001:
@@ -154,9 +145,6 @@ def generate_flat_html(export_df: pd.DataFrame) -> str:
     """
     return html_content
 
-
-# ### Funções de Carregamento e Processamento de Dados ###
-
 @st.cache_data
 def get_available_reports() -> List[Path]:
     """
@@ -165,7 +153,6 @@ def get_available_reports() -> List[Path]:
     report_path = Path(REPORTS_DIR)
     txt_files = list(report_path.glob('relatorio_metricas_absolutas_*.txt'))
 
-    # Classifica por nome (que contém timestamp) em ordem decrescente
     txt_files_sorted = sorted(txt_files, key=lambda f: f.name, reverse=True)
     return txt_files_sorted
 
@@ -204,10 +191,8 @@ def process_data(raw_df: pd.DataFrame) -> pd.DataFrame:
 
     processed_df = raw_df.copy()
 
-    # 1. Extrair nome do Modelo
     processed_df['Modelo'] = processed_df['nome_run'].apply(lambda x: x.split('_')[0])
 
-    # 2. Renomear colunas
     processed_df.rename(columns={
         'mAP50_95': 'mAP50-95',
         'precisao': 'Precision',
@@ -215,7 +200,6 @@ def process_data(raw_df: pd.DataFrame) -> pd.DataFrame:
         'velocidade_inference_ms': 'Inferencia (ms)'
     }, inplace=True)
 
-    # 3. Converter colunas numéricas (necessário para KPIs e ordenação)
     num_cols = ['mAP50-95', 'mAP50', 'mAP75', 'Precision', 'Recall', 'Inferencia (ms)']
     for col in num_cols:
         if col in processed_df.columns:
@@ -252,7 +236,6 @@ def get_pivot_view(processed_df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
             st.error("Nenhuma coluna de métrica (mAP50-95, mAP50, etc.) encontrada para pivotar.")
             return None, None
 
-        # 1. Criar a tabela dinâmica
         pivot_df = df_copy.pivot_table(
             index='Modelo',
             columns='dataset_nome',
@@ -260,20 +243,16 @@ def get_pivot_view(processed_df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
             aggfunc='mean'
         )
 
-        # 2. Reordenar níveis de coluna
         pivot_df = pivot_df.swaplevel(0, 1, axis=1)
 
-        # 3. Ordenar as colunas
         dataset_order = sorted([d for d in df_copy['dataset_nome'].unique() if d in pivot_df.columns.get_level_values(0)])
         metric_order = [m for m in metrics_to_pivot if m in pivot_df.columns.get_level_values(1)]
         pivot_df = pivot_df.reindex(columns=dataset_order, level=0)
         pivot_df = pivot_df.reindex(columns=metric_order, level=1)
         pivot_df = pivot_df.round(3)
 
-        # DataFrame de exportação mantém o MultiIndex
         export_df = pivot_df.copy()
 
-        # 4. Preparar para a visualização (achatado)
         display_df = pivot_df.reset_index()
         flat_cols = ['Modelo']
         for col in display_df.columns:
@@ -290,9 +269,6 @@ def get_pivot_view(processed_df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
         st.error(f"Erro ao criar a visualização Orientador: {e}")
         return None, None
 
-
-# ### Funções da Aba de Gráficos (MODIFICADAS) ###
-
 def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
     """Renderiza todo o conteúdo da aba 'Análise Gráfica'."""
 
@@ -302,10 +278,8 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
         st.warning("Não há dados processados para exibir gráficos.")
         return
 
-    # Agrupa os dados pela média (para visões gerais)
     df_mean = df.groupby('Modelo')[['mAP50-95', 'mAP50', 'Precision', 'Recall', 'Inferencia (ms)']].mean().reset_index()
 
-    # Cria as sub-abas
     tab_overview, tab_dataset, tab_model, tab_matrix, tab_dist = st.tabs([
         "🚀 Visão Geral",
         "📊 Por Dataset",
@@ -318,7 +292,6 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
         st.subheader("Visão Geral: Performance Média dos Modelos")
         st.markdown("Resultados médios de cada modelo, consolidados de todos os datasets.")
 
-        # Gráfico 1: "Magic Quadrant" (mAP vs. Velocidade)
         chart_map_vs_speed = alt.Chart(df_mean).mark_circle(size=100).encode(
             x=alt.X('Inferencia (ms)', scale=alt.Scale(zero=False)),
             y=alt.Y('mAP50-95', scale=alt.Scale(zero=False)),
@@ -327,13 +300,13 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
         ).properties(
             title='Visão Geral: mAP50-95 vs. Velocidade de Inferência (Média)'
         ).interactive()
-        # --- CORREÇÃO DE AVISO ---
+                                   
         st.altair_chart(chart_map_vs_speed)
 
         col1, col2 = st.columns(2)
 
         with col1:
-            # Gráfico 2: Ranking de mAP50-95 (Média)
+                                                    
             chart_avg_map = alt.Chart(df_mean).mark_bar().encode(
                 x=alt.X('mAP50-95', title='mAP50-95 (Média)'),
                 y=alt.Y('Modelo', sort='-x'),
@@ -342,10 +315,9 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
             ).properties(
                 title='Ranking de mAP50-95 (Média)'
             )
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(chart_avg_map)
 
-            # Gráfico 3: Boxplot de mAP50-95
             chart_box_map = alt.Chart(df).mark_boxplot().encode(
                 x=alt.X('mAP50-95', title='mAP50-95'),
                 y=alt.Y('Modelo'),
@@ -353,23 +325,22 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
             ).properties(
                 title='Distribuição de mAP50-95 por Modelo (todos datasets)'
             )
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(chart_box_map)
 
         with col2:
-            # Gráfico 4: Ranking de Velocidade (Média)
+                                                      
             chart_avg_speed = alt.Chart(df_mean).mark_bar().encode(
                 x=alt.X('Inferencia (ms)', title='Inferencia (ms, Média)'),
-                y=alt.Y('Modelo', sort='x'), # Sobe o mais rápido
+                y=alt.Y('Modelo', sort='x'),                     
                 color='Modelo',
                 tooltip=['Modelo', 'mAP50-95', 'Inferencia (ms)']
             ).properties(
                 title='Ranking de Velocidade de Inferência (Média)'
             )
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(chart_avg_speed)
 
-            # Gráfico 5: Boxplot de Velocidade
             chart_box_speed = alt.Chart(df).mark_boxplot().encode(
                 x=alt.X('Inferencia (ms)'),
                 y=alt.Y('Modelo'),
@@ -377,7 +348,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
             ).properties(
                 title='Distribuição de Inferência (ms) por Modelo (todos datasets)'
             )
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(chart_box_speed)
 
     with tab_dataset:
@@ -389,7 +360,6 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
         if selected_dataset:
             df_filtered = df[df['dataset_nome'] == selected_dataset]
 
-            # Gráfico 6: Magic Quadrant por Dataset
             chart_ds_map_vs_speed = alt.Chart(df_filtered).mark_circle(size=100).encode(
                 x=alt.X('Inferencia (ms)', scale=alt.Scale(zero=False)),
                 y=alt.Y('mAP50-95', scale=alt.Scale(zero=False)),
@@ -398,34 +368,33 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
             ).properties(
                 title=f'mAP50-95 vs. Velocidade em "{selected_dataset}"'
             ).interactive()
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(chart_ds_map_vs_speed)
 
             col1, col2 = st.columns(2)
 
             with col1:
-                # Gráfico 7: mAP50-95 por Dataset
+                                                 
                 chart_ds_map95 = alt.Chart(df_filtered).mark_bar().encode(
                     x=alt.X('mAP50-95'),
                     y=alt.Y('Modelo', sort='-x'),
                     color='Modelo',
                     tooltip=['Modelo', 'mAP50-95', 'mAP50', 'Inferencia (ms)']
                 ).properties(title=f'mAP50-95 em "{selected_dataset}"')
-                # --- CORREÇÃO DE AVISO ---
+                                           
                 st.altair_chart(chart_ds_map95)
 
-                # Gráfico 8: mAP50 por Dataset
                 chart_ds_map50 = alt.Chart(df_filtered).mark_bar().encode(
                     x=alt.X('mAP50'),
                     y=alt.Y('Modelo', sort='-x'),
                     color='Modelo',
                     tooltip=['Modelo', 'mAP50-95', 'mAP50', 'Inferencia (ms)']
                 ).properties(title=f'mAP50 em "{selected_dataset}"')
-                # --- CORREÇÃO DE AVISO ---
+                                           
                 st.altair_chart(chart_ds_map50)
 
             with col2:
-                # Gráfico 9: Precision vs Recall
+                                                
                 df_pr = df_filtered.melt(id_vars='Modelo', value_vars=['Precision', 'Recall'], var_name='Métrica', value_name='Valor')
                 chart_ds_pr = alt.Chart(df_pr).mark_bar().encode(
                     x=alt.X('Valor', title='Valor', scale=alt.Scale(domain=[0, 1])),
@@ -434,17 +403,16 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
                     row='Métrica',
                     tooltip=['Modelo', 'Métrica', 'Valor']
                 ).properties(title=f'Precision vs. Recall em "{selected_dataset}"')
-                # --- CORREÇÃO DE AVISO ---
+                                           
                 st.altair_chart(chart_ds_pr)
 
-                # Gráfico 10: Velocidade por Dataset
                 chart_ds_speed = alt.Chart(df_filtered).mark_bar().encode(
                     x=alt.X('Inferencia (ms)'),
                     y=alt.Y('Modelo', sort='x'),
                     color='Modelo',
                     tooltip=['Modelo', 'Inferencia (ms)']
                 ).properties(title=f'Velocidade em "{selected_dataset}"')
-                # --- CORREÇÃO DE AVISO ---
+                                           
                 st.altair_chart(chart_ds_speed)
 
     with tab_model:
@@ -456,68 +424,64 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
         if selected_model:
             df_filtered = df[df['Modelo'] == selected_model]
 
-            # Gráfico 11: mAP50-95 por Modelo
             chart_model_map95 = alt.Chart(df_filtered).mark_bar().encode(
                 x=alt.X('mAP50-95'),
                 y=alt.Y('dataset_nome', title='Dataset', sort='-x'),
                 color='dataset_nome',
                 tooltip=['dataset_nome', 'mAP50-95', 'mAP50', 'Inferencia (ms)']
             ).properties(title=f'Performance de {selected_model}: mAP50-95')
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(chart_model_map95)
 
             col1, col2 = st.columns(2)
             with col1:
-                # Gráfico 12: mAP50 por Modelo
+                                              
                 chart_model_map50 = alt.Chart(df_filtered).mark_bar().encode(
                     x=alt.X('mAP50'),
                     y=alt.Y('dataset_nome', title='Dataset', sort='-x'),
                     color='dataset_nome',
                     tooltip=['dataset_nome', 'mAP50-95', 'mAP50']
                 ).properties(title=f'Performance de {selected_model}: mAP50')
-                # --- CORREÇÃO DE AVISO ---
+                                           
                 st.altair_chart(chart_model_map50)
 
-                # Gráfico 13: Precision por Modelo
                 chart_model_p = alt.Chart(df_filtered).mark_bar().encode(
                     x=alt.X('Precision'),
                     y=alt.Y('dataset_nome', title='Dataset', sort='-x'),
                     color='dataset_nome',
                     tooltip=['dataset_nome', 'Precision']
                 ).properties(title=f'Performance de {selected_model}: Precision')
-                # --- CORREÇÃO DE AVISO ---
+                                           
                 st.altair_chart(chart_model_p)
 
             with col2:
-                # Gráfico 14: Recall por Modelo
+                                               
                 chart_model_r = alt.Chart(df_filtered).mark_bar().encode(
                     x=alt.X('Recall'),
                     y=alt.Y('dataset_nome', title='Dataset', sort='-x'),
                     color='dataset_nome',
                     tooltip=['dataset_nome', 'Recall']
                 ).properties(title=f'Performance de {selected_model}: Recall')
-                # --- CORREÇÃO DE AVISO ---
+                                           
                 st.altair_chart(chart_model_r)
 
-                # Gráfico 15: Velocidade por Modelo
                 chart_model_speed = alt.Chart(df_filtered).mark_bar().encode(
                     x=alt.X('Inferencia (ms)'),
                     y=alt.Y('dataset_nome', title='Dataset', sort='x'),
                     color='dataset_nome',
                     tooltip=['dataset_nome', 'Inferencia (ms)']
                 ).properties(title=f'Velocidade de {selected_model} por Dataset')
-                # --- CORREÇÃO DE AVISO ---
+                                           
                 st.altair_chart(chart_model_speed)
 
     with tab_matrix:
         st.subheader("Matrizes e Heatmaps")
 
         if pivot_df is not None and not pivot_df.empty:
-            # --- CORREÇÃO DE AVISO (future_stack=True) ---
+                                                           
             pivot_long = pivot_df.stack(level=[0, 1], future_stack=True).reset_index()
             pivot_long.columns = ['Modelo', 'dataset_nome', 'Metrica', 'Valor']
 
-            # Gráfico 16: Heatmap de mAP50-95
             heatmap_map95 = alt.Chart(pivot_long[pivot_long['Metrica'] == 'mAP50-95']).mark_rect().encode(
                 x=alt.X('dataset_nome', title='Dataset'),
                 y=alt.Y('Modelo'),
@@ -526,24 +490,22 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
             ).properties(
                 title='Heatmap: Performance mAP50-95 (Modelo vs. Dataset)'
             )
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(heatmap_map95)
 
-            # Gráfico 17: Heatmap de Velocidade
             heatmap_speed = alt.Chart(pivot_long[pivot_long['Metrica'] == 'Inferencia (ms)']).mark_rect().encode(
                 x=alt.X('dataset_nome', title='Dataset'),
                 y=alt.Y('Modelo'),
-                color=alt.Color('Valor', title='Inferencia (ms)', scale=alt.Scale(range='heatmap', reverse=True)), # Inverte cor (menor=melhor)
+                color=alt.Color('Valor', title='Inferencia (ms)', scale=alt.Scale(range='heatmap', reverse=True)),                             
                 tooltip=['Modelo', 'dataset_nome', 'Valor']
             ).properties(
                 title='Heatmap: Velocidade de Inferência (Modelo vs. Dataset)'
             )
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(heatmap_speed)
         else:
             st.warning("Heatmaps requerem o 'Modo Orientador', mas os dados pivotados não puderam ser gerados.")
 
-        # Gráfico 18: Matriz de Correlação
         corr_df = df[['mAP50-95', 'mAP50', 'mAP75', 'Precision', 'Recall', 'Inferencia (ms)']].corr().stack().reset_index()
         corr_df.columns = ['Var1', 'Var2', 'Correlação']
 
@@ -561,7 +523,7 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
             text=alt.Text('Correlação', format='.2f'),
             color=alt.value('black')
         )
-        # --- CORREÇÃO DE AVISO ---
+                                   
         st.altair_chart(heatmap_corr + text_corr)
 
     with tab_dist:
@@ -569,51 +531,45 @@ def render_graphics_tab(df: pd.DataFrame, pivot_df: pd.DataFrame):
 
         col1, col2 = st.columns(2)
         with col1:
-            # Gráfico 19: Histograma mAP50-95
+                                             
             hist_map95 = alt.Chart(df).mark_bar().encode(
                 x=alt.X('mAP50-95', bin=alt.Bin(maxbins=20), title='mAP50-95'),
                 y=alt.Y('count()', title='Contagem')
             ).properties(title='Distribuição de mAP50-95')
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(hist_map95)
 
-            # Gráfico 20: Histograma Precision
             hist_p = alt.Chart(df).mark_bar().encode(
                 x=alt.X('Precision', bin=alt.Bin(maxbins=20), title='Precision'),
                 y=alt.Y('count()', title='Contagem')
             ).properties(title='Distribuição de Precision')
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(hist_p)
 
         with col2:
-            # Gráfico 21: Histograma Inferencia (ms)
+                                                    
             hist_speed = alt.Chart(df).mark_bar().encode(
                 x=alt.X('Inferencia (ms)', bin=alt.Bin(maxbins=20), title='Inferencia (ms)'),
                 y=alt.Y('count()', title='Contagem')
             ).properties(title='Distribuição de Velocidade de Inferência')
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(hist_speed)
 
-            # Gráfico 22: Histograma Recall
             hist_r = alt.Chart(df).mark_bar().encode(
                 x=alt.X('Recall', bin=alt.Bin(maxbins=20), title='Recall'),
                 y=alt.Y('count()', title='Contagem')
             ).properties(title='Distribuição de Recall')
-            # --- CORREÇÃO DE AVISO ---
+                                       
             st.altair_chart(hist_r)
-
-# ### Funções da Aba de Tabela de Dados (MODIFICADA) ###
 
 def render_data_table_tab(processed_df, raw_df, pivot_export_df, view_mode, show_details, selection_key):
     """Renderiza todo o conteúdo da aba 'Tabela de Dados'."""
 
-    # --- KPIs (VISÃO GERAL) ---
     try:
         st.subheader("🚀 Visão Geral (Melhores Resultados)")
         st.markdown(f"**Fonte de Dados:** `{selection_key}`")
         kpi_cols = st.columns(3)
 
-        # Filtra NaNs antes de buscar o índice
         df_valid_map = processed_df['mAP50-95'].dropna()
         best_map_idx = df_valid_map.idxmax() if not df_valid_map.empty else None
 
@@ -659,7 +615,6 @@ def render_data_table_tab(processed_df, raw_df, pivot_export_df, view_mode, show
 
     st.divider()
 
-    # --- Lógica de Visualização e Exportação ---
     export_df = None
     html_content = ""
     current_view_mode = 'flat'
@@ -685,7 +640,6 @@ def render_data_table_tab(processed_df, raw_df, pivot_export_df, view_mode, show
         else:
             st.error("Não foi possível gerar a visualização 'Modo Orientador'.")
 
-    # --- Seção de Exportação (MOVIMADA PARA CIMA) ---
     if export_df is not None and not export_df.empty:
         with st.container():
             col1, col2 = st.columns(2)
@@ -700,7 +654,7 @@ def render_data_table_tab(processed_df, raw_df, pivot_export_df, view_mode, show
                     data=csv_data,
                     file_name=f"resultados_{current_view_mode}.csv",
                     mime="text/csv",
-                    width='stretch' # CORREÇÃO DE ERRO
+                    width='stretch'                   
                 )
 
             with col2:
@@ -709,7 +663,7 @@ def render_data_table_tab(processed_df, raw_df, pivot_export_df, view_mode, show
                     data=html_content.encode('utf-8'),
                     file_name=f"resultados_{current_view_mode}.html",
                     mime="text/html",
-                    width='stretch' # CORREÇÃO DE ERRO
+                    width='stretch'                   
                 )
 
             with st.expander("📋 Ver/Copiar Dados (CSV com Tabulação)"):
@@ -722,7 +676,6 @@ def render_data_table_tab(processed_df, raw_df, pivot_export_df, view_mode, show
                 )
         st.divider()
 
-    # --- EXIBIÇÃO DA TABELA (FINAL) ---
     if view_mode == "Modo Padrão (Plano)" and display_df is not None:
         if show_details:
             cols_to_show = display_df.columns
@@ -730,7 +683,7 @@ def render_data_table_tab(processed_df, raw_df, pivot_export_df, view_mode, show
             cols_to_show = ['Modelo', 'dataset_nome', 'mAP50-95', 'mAP50', 'Precision', 'Recall', 'Inferencia (ms)']
             cols_to_show = [col for col in cols_to_show if col in display_df.columns]
 
-        st.dataframe(display_df[cols_to_show], width='stretch', hide_index=True) # CORREÇÃO DE ERRO
+        st.dataframe(display_df[cols_to_show], width='stretch', hide_index=True)                   
 
     elif view_mode == "Modo Orientador (Pivot)" and html_content:
         st.markdown(html_content, unsafe_allow_html=True)
@@ -738,14 +691,10 @@ def render_data_table_tab(processed_df, raw_df, pivot_export_df, view_mode, show
     elif display_df is None and html_content == "":
         st.warning("Não foi possível carregar ou processar dados para exibição.")
 
-
-# ### Ponto de Entrada Principal (Main) ###
-
 def main():
     st.set_page_config(layout="wide", page_title="Visualizador de Resultados")
     st.title("📊 Painel de Análise Comparativa (TCC-YOLO)")
 
-    # --- Controles na Sidebar ---
     st.sidebar.title("Opções de Visualização")
 
     st.sidebar.header("1. Fonte de Dados")
@@ -791,7 +740,6 @@ def main():
         show_details = st.sidebar.toggle("Mostrar colunas detalhadas", value=False,
                                         help="Exibe colunas extras como 'nome_run', 'status', 'velocidade_preprocess_ms', etc.")
 
-    # --- Carregamento e Processamento ---
     filenames_to_load = files_map[selection_key]
     raw_df = load_raw_data(filenames_to_load)
     if raw_df is None:
@@ -803,10 +751,8 @@ def main():
         st.error("Falha no processamento dos dados.")
         st.stop()
 
-    # --- Preparar Dados Pivotados (necessários para ambas as abas) ---
     _, pivot_export_df = get_pivot_view(processed_df)
 
-    # --- Renderização das Abas Principais ---
     tab_charts, tab_data = st.tabs(["📊 Análise Gráfica", "🗃️ Tabela de Dados"])
 
     with tab_charts:

@@ -22,7 +22,6 @@ sys.path.append(ROOT_DIR)
 
 from utils.logger_config import setup_logging
 
-# --- INÍCIO DA MODIFICAÇÃO (MÓDULO 3 ADICIONADO DE VOLTA) ---
 PIPELINE_SCRIPTS = {
     "Módulo 1: Pré-processamento": [
         "01_data_preprocessing/01_download_datasets.py",
@@ -39,7 +38,6 @@ PIPELINE_SCRIPTS = {
         "03_results_analysis/08_streamlit_results_viewer.py",
     ]
 }
-# --- FIM DA MODIFICAÇÃO ---
 
 class MainDashboard(tk.Tk):
 
@@ -79,10 +77,10 @@ class MainDashboard(tk.Tk):
         for module, scripts in PIPELINE_SCRIPTS.items():
             module_id = self.scripts_tree.insert('', 'end', text=module, open=True)
             for script_path in scripts:
-                # Modificação para Módulo 3
+                                           
                 status = 'Pendente'
                 if module == "Módulo 3: Avaliação Final":
-                    status = 'Visualizar' # Status customizado
+                    status = 'Visualizar'                     
                 self.scripts_tree.insert(module_id, 'end', text=script_path, values=(status,))
         self.scripts_tree.pack(fill=tk.BOTH, expand=True)
 
@@ -161,22 +159,17 @@ class MainDashboard(tk.Tk):
             self.logger.error(f"Falha ao copiar log para a área de transferência: {e}")
             messagebox.showerror("Erro ao Copiar", f"Não foi possível copiar o conteúdo:\n{e}")
 
-    # --- INÍCIO DA MODIFICAÇÃO ---
-    # Atualizado para ignorar o Módulo 3
     def get_all_script_ids(self):
         """Pega todos os IDs de scripts, exceto os do Módulo 3."""
         script_ids = []
         for module_id in self.scripts_tree.get_children():
             module_text = self.scripts_tree.item(module_id, 'text')
-            # Filtro para "Executar Tudo" não incluir o visualizador
+                                                                    
             if module_text == "Módulo 3: Avaliação Final":
                 continue
             script_ids.extend(self.scripts_tree.get_children(module_id))
         return script_ids
-    # --- FIM DA MODIFICAÇÃO ---
 
-    # --- INÍCIO DA MODIFICAÇÃO ---
-    # Atualizado para lidar com a seleção do Módulo 3
     def run_selected_scripts(self):
         selected_ids = self.scripts_tree.selection()
         if not selected_ids:
@@ -184,7 +177,6 @@ class MainDashboard(tk.Tk):
                                 "Por favor, selecione um ou mais scripts na lista para executar.")
             return
 
-        # Separa os scripts normais do script do Streamlit
         script_ids_to_run = [item_id for item_id in selected_ids if self.scripts_tree.parent(item_id)]
 
         streamlit_script_path = "03_results_analysis/08_streamlit_results_viewer.py"
@@ -198,22 +190,18 @@ class MainDashboard(tk.Tk):
             else:
                 normal_scripts.append(item_id)
 
-        # Mensagem se o usuário selecionou apenas um módulo (pasta)
         if not normal_scripts and not streamlit_scripts and selected_ids:
              messagebox.showinfo("Nenhuma Ação", "Seleção inválida. Por favor, selecione os scripts individuais, não as pastas de Módulo.")
              return
 
-        # Executa os scripts normais em background
         if normal_scripts:
             self.start_execution_thread(normal_scripts)
 
-        # Lança o visualizador (não bloqueia a thread)
         if streamlit_scripts:
             self.open_results_viewer()
-    # --- FIM DA MODIFICAÇÃO ---
 
     def run_all_scripts(self):
-        # get_all_script_ids() já está modificado para excluir o Módulo 3
+                                                                         
         script_ids_to_run = self.get_all_script_ids()
         self.start_execution_thread(script_ids_to_run)
 
@@ -227,7 +215,6 @@ class MainDashboard(tk.Tk):
         self.stop_event.clear()
         self.toggle_controls_state(tk.DISABLED)
 
-        # Reseta o status apenas dos scripts que serão executados
         for item_id in script_ids_to_run:
              if self.scripts_tree.exists(item_id):
                 self.scripts_tree.set(item_id, 'status', 'Pendente')
@@ -308,12 +295,11 @@ class MainDashboard(tk.Tk):
         self.log_to_gui("--- 🚀 Lançando o Painel de Resultados Streamlit... ---")
         self.log_to_gui("--- O painel abrirá no seu navegador padrão. ---")
 
-        # Caminho corrigido para o novo nome do script
         script_path = os.path.join(ROOT_DIR, "03_results_analysis", "08_streamlit_results_viewer.py")
 
         command = [sys.executable, "-m", "streamlit", "run", script_path]
         try:
-            # Usa Popen para não bloquear a GUI
+                                               
             subprocess.Popen(command, cwd=ROOT_DIR)
             self.log_to_gui(f"--- Comando executado: {' '.join(command)} ---")
         except Exception as e:

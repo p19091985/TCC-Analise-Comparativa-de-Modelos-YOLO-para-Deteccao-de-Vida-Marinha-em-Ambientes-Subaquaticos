@@ -21,36 +21,30 @@ except ImportError:
     print("[AÇÃO] Por favor, ative seu ambiente e instale as dependências: pip install torch ultralytics pyyaml")
     sys.exit(1)
 
-# --- INÍCIO DA MODIFICAÇÃO ---
-# Adicionado EVAL_DIR à importação
 from config.paths import RUNS_DIR, UNZIPPED_DIR, REPORTS_DIR, ROOT_DIR, EVAL_DIR
-# --- FIM DA MODIFICAÇÃO ---
+                            
 from utils.logger_config import setup_logging
 
 class ValidadorAbsoluto:
 
     def __init__(self):
-        # Este diretório é para LER os modelos treinados
+                                                        
         self.diretorio_runs = Path(RUNS_DIR)
         self.diretorio_datasets = Path(UNZIPPED_DIR)
-        # Este diretório é para SALVAR o relatório .txt
+                                                       
         self.reports_dir = Path(REPORTS_DIR)
         self.root_dir = Path(ROOT_DIR)
         self.timestamp_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-        # --- INÍCIO DA MODIFICAÇÃO ---
-        # Novo diretório para SALVAR os artefatos da avaliação (gráficos, etc.)
         self.eval_dir = Path(EVAL_DIR)
-        # --- FIM DA MODIFICAÇÃO ---
 
         self.logger = setup_logging('FinalEvaluatorLogger', __file__)
 
-        # Garante que as pastas de saída existam
         try:
             os.makedirs(self.reports_dir, exist_ok=True)
-            # --- INÍCIO DA MODIFICAÇÃO ---
-            os.makedirs(self.eval_dir, exist_ok=True) # Garante que a pasta de avaliação exista
-            # --- FIM DA MODIFICAÇÃO ---
+                                           
+            os.makedirs(self.eval_dir, exist_ok=True)                                          
+                                        
         except Exception as e:
             self.logger.critical(f"Não foi possível criar diretórios de saída: {e}", exc_info=True)
             sys.exit(1)
@@ -168,17 +162,13 @@ class ValidadorAbsoluto:
             self.logger.info(
                 f"Iniciando validação no split 'test' do dataset '{nome_dataset}' usando dispositivo '{dispositivo}'.")
 
-            # --- INÍCIO DA MODIFICAÇÃO ---
-            # Define 'project' como o diretório de avaliação e 'name'
-            # para criar uma subpasta com o nome do modelo que está sendo avaliado.
             metricas = modelo.val(data=detalhes_dataset['caminho_yaml_relativo'],
                                   split='test',
                                   device=dispositivo,
-                                  project=str(self.eval_dir), # Salva em 'output/evaluations'
-                                  name=f"{run_dir.name}_EVAL", # Subpasta ex: 'YOLOv5n_..._EVAL'
+                                  project=str(self.eval_dir),                                
+                                  name=f"{run_dir.name}_EVAL",                                  
                                   exist_ok=True,
                                   verbose=False)
-            # --- FIM DA MODIFICAÇÃO ---
 
             self.logger.info("Validação concluída com sucesso. Coletando métricas.")
 
@@ -228,7 +218,7 @@ class ValidadorAbsoluto:
                             f"{velocidade.get('preprocess', 0.0):.3f}", f"{velocidade.get('inference', 0.0):.3f}",
                             f"{velocidade.get('postprocess', 0.0):.3f}", ""
                         ]
-                        f.write(DELIMITADOR.join(linha_dados) + "\n") # Correção do erro de lógica anterior
+                        f.write(DELIMITADOR.join(linha_dados) + "\n")                                      
                     else:
                         erro_msg = resultado.get('mensagem_erro', 'Erro desconhecido').replace("\n", " ").replace(
                             DELIMITADOR, ",")
@@ -237,7 +227,7 @@ class ValidadorAbsoluto:
                             resultado.get("nome_run", ""), resultado.get("status", "FALHA"), dataset_nome,
                             "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", erro_msg
                         ]
-                        # Correção do SyntaxError 'DELIMITA DOR'
+                                                                
                         f.write(DELIMITADOR.join(linha_dados) + "\n")
             self.logger.info("Relatório salvo com sucesso.")
         except Exception:

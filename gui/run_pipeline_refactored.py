@@ -15,21 +15,18 @@ import importlib
 import subprocess
 import platform
 
-# --- Configuração de Path ---
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(ROOT_DIR)
 
 from config import paths
 from utils.logger_config import setup_logging
 
-# --- Nomes de Módulos Corrigidos ---
 try:
     download_main = importlib.import_module("01_data_preprocessing.01_download_datasets").main
     sync_yamls_main = importlib.import_module("01_data_preprocessing.02_sync_yamls").main
     reduce_datasets_main = importlib.import_module("01_data_preprocessing.03_reduce_datasets").main
     merge_datasets_main = importlib.import_module("01_data_preprocessing.04_merge_datasets").main
 
-    # --- Caminhos atualizados para 05, 06, 07 ---
     train_yolo_main = importlib.import_module("02_model_training.05_train_yolo_models").main
     train_rtdetr_main = importlib.import_module("02_model_training.06_train_rtdetr_models").main
     evaluate_main = importlib.import_module("02_model_training.07_evaluate_models_on_test_set").main
@@ -40,7 +37,6 @@ except ImportError as e:
     print(f"Detalhe do erro: {e}")
     sys.exit(1)
 
-# Dicionário de scripts para o menu
 MENU_SCRIPTS = {
     "11": ("(M1) Download de Datasets", download_main),
     "12": ("(M1) Sincronizar YAMLs", sync_yamls_main),
@@ -56,14 +52,10 @@ PIPELINE_COMPLETO = [
     train_yolo_main, train_rtdetr_main, evaluate_main
 ]
 
-
-# --- Funções Auxiliares do Menu ---
-
 def clear_screen():
     """Limpa a tela do console."""
     command = 'cls' if platform.system().lower() == "windows" else 'clear'
     os.system(command)
-
 
 def run_script(main_func, logger):
     """Executa uma única função .main() e reporta o status."""
@@ -77,7 +69,6 @@ def run_script(main_func, logger):
         logger.critical(f"--- ❌ FALHA CRÍTICA: {script_name} falhou ---", exc_info=True)
         return False
 
-
 def launch_streamlit(logger):
     """Lança o painel Streamlit em um processo separado."""
     logger.info("--- 🚀 Lançando o Painel de Resultados Streamlit... ---")
@@ -90,7 +81,6 @@ def launch_streamlit(logger):
         logger.info(f"--- Comando executado: {' '.join(command)} ---")
     except Exception as e:
         logger.critical(f"--- ❌ ERRO CRÍTICO ao lançar Streamlit: {e} ---")
-
 
 def run_menu():
     """Exibe o menu interativo principal."""
@@ -130,7 +120,7 @@ def run_menu():
             break
 
         elif choice == '1' or choice == '2':
-            # Executar pipeline completo
+                                        
             logger.info("############################################################")
             logger.info("### INICIANDO PIPELINE COMPLETO (MODO MENU) ###")
             logger.info("############################################################")
@@ -163,9 +153,6 @@ def run_menu():
             print(f"Opção '{choice}' inválida. Tente novamente.")
             time.sleep(1)
 
-
-# --- MODO FLAG (LEGADO) ---
-
 def run_with_flags(args, logger):
     """
     Orquestra a execução do pipeline com base em flags CLI (modo legado).
@@ -195,7 +182,6 @@ def run_with_flags(args, logger):
         else:
             logger.warning("MÓDULO 2: Treinamento de modelos pulado conforme solicitado (--skip-training).")
 
-        # --- CORREÇÃO DO BUG (args.skip-evaluation -> args.skip_evaluation) ---
         if not args.skip_evaluation:
             logger.info("\n>>> EXECUTANDO MÓDULO 2 (Etapa Final): AVALIAÇÃO FINAL <<<\n")
             evaluate_main()
@@ -210,17 +196,15 @@ def run_with_flags(args, logger):
         logger.info("### PIPELINE (MODO FLAG) FINALIZADO ###")
         logger.info("############################################################")
 
-
 def main():
     """
     Ponto de entrada principal.
     Verifica se flags CLI foram passadas. Se sim, usa o modo flag.
     Se não, chama o modo menu.
     """
-    # Verifica se alguma flag conhecida (ou qualquer flag) foi passada
-    # `len(sys.argv) > 1` é a forma mais simples de checar
+
     if len(sys.argv) > 1:
-        # --- MODO FLAG ---
+                           
         paths.create_project_structure()
         logger = setup_logging('PipelineOrchestrator_Flags', __file__)
 
@@ -236,9 +220,8 @@ def main():
         run_with_flags(args, logger)
 
     else:
-        # --- MODO MENU ---
+                           
         run_menu()
-
 
 if __name__ == "__main__":
     main()

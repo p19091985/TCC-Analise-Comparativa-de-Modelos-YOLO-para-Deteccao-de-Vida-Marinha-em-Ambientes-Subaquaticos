@@ -1,6 +1,5 @@
 import torch
 
-# Verifica se CUDA está disponível
 if torch.cuda.is_available():
     print("Placa NVIDIA ativa! Suporte a CUDA detectado.")
     print(f"Número de GPUs: {torch.cuda.device_count()}")
