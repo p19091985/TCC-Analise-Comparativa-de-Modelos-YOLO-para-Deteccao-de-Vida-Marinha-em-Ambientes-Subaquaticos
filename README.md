@@ -77,18 +77,23 @@ O objetivo deste pipeline é fornecer um fluxo de trabalho completo, desde a aqu
 
 Clone o repositório e instale as dependências necessárias. É altamente recomendado usar um ambiente virtual.
 
+### Clone o projeto
 ```bash
-# Clone o projeto
 git clone https://github.com/p19091985/TCC-Analise-Comparativa-de-Modelos-YOLO-para-Deteccao-de-Vida-Marinha-em-Ambientes-Subaquaticos
 cd TCC-Analise-Comparativa-de-Modelos-YOLO-para-Deteccao-de-Vida-Marinha-em-Ambientes-Subaquaticos
+```
 
-# Crie e ative um ambiente virtual (recomendado)
+### Crie e ative um ambiente virtual (recomendado)
+```bash
 python -m venv venv
 source venv/bin/activate  # No Linux/macOS
 # venv\Scripts\activate   # No Windows
+```
 
-# Instale as dependências
+### Instale as dependências
+```bash
 pip install -r requirements.txt
+```
 
 ### 🚀 3. Executando o Pipeline
 
