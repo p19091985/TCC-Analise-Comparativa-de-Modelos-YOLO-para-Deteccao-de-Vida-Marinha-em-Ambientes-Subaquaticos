@@ -76,8 +76,8 @@ Clone o repositório e instale as dependências necessárias. É altamente recom
 
 ```bash
 # Clone o projeto
-git clone <https://github.com/p19091985/TCC-Analise-Comparativa-de-Modelos-YOLO-para-Deteccao-de-Vida-Marinha-em-Ambientes-Subaquaticos>
-cd <TCC-Analise-Comparativa-de-Modelos-YOLO-para-Deteccao-de-Vida-Marinha-em-Ambientes-Subaquaticos>
+git clone https://github.com/p19091985/TCC-Analise-Comparativa-de-Modelos-YOLO-para-Deteccao-de-Vida-Marinha-em-Ambientes-Subaquaticos
+cd TCC-Analise-Comparativa-de-Modelos-YOLO-para-Deteccao-de-Vida-Marinha-em-Ambientes-Subaquaticos
 
 # Crie e ative um ambiente virtual (recomendado)
 python -m venv venv
