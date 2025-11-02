@@ -18,16 +18,19 @@ Pipeline automatizado, modular e reprodutível para o artigo "Análise Comparati
 
 ## Tabela de Conteúdos
 
+* [🎥 Demonstração](#-demonstração)
 * [Visão Geral](#visão-geral)
-* [Principais Funcionalidades](#-principais-funcionalidades)
-* [Tecnologias Utilizadas](#️-tecnologias-utilizadas)
-* [Estrutura do Projeto](#-estrutura-do-projeto)
-* [Como Utilizar](#-como-utilizar)
+* [✨ Principais Funcionalidades](#-principais-funcionalidades)
+* [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
+* [📁 Estrutura do Projeto](#-estrutura-do-projeto)
+* [🚀 Como Utilizar](#-como-utilizar)
   * [1. Pré-requisitos](#1-pré-requisitos)
   * [2. Instalação](#2-instalação)
-  * [3. Executando o Pipeline](#3-executando-o-pipeline)
-  * [4. Visualizando os Resultados](#4-visualizando-os-resultados)
-* [Licença](#-licença)
+  * [🚀 3. Executando o Pipeline](#-3-executando-o-pipeline)
+  * [📊 4. Visualizando os Resultados](#-4-visualizando-os-resultados)
+* [5. Arquitetura](#5-arquitetura)
+* [6. Screenshots](#6-screenshots)
+* [7. 📄 Licença](#7--licença)
 
 
 ## Visão Geral
@@ -144,16 +147,17 @@ Alternativamente, você pode usar os botões **“📊 Visualizar Resultados”*
 ##  5. Arquitetura
 
 ![Diagrama do Pipeline](arquitetura/diagrama%20do%20pipeline.drawio.png)
-### 6. Screenshots
+
+## 6. Screenshots
 ![Screenshot 1](screenshots/Captura de tela em 2025-11-02 20-28-09.png)
-![Screenshot 1](screenshots/screencapture-localhost-8501-2025-11-02-15_33_57.png)
-![Screenshot 2](screenshots/screencapture-localhost-8501-2025-11-02-15_34_57.png)
-![Screenshot 3](screenshots/screencapture-localhost-8501-2025-11-02-15_34_42.png)
-![Screenshot 4](screenshots/screencapture-localhost-8501-2025-11-02-15_34_34.png)
-![Screenshot 5](screenshots/screencapture-localhost-8501-2025-11-02-15_34_26.png)
-![Screenshot 6](screenshots/screencapture-localhost-8501-2025-11-02-15_34_18.png)
+![Screenshot 2](screenshots/screencapture-localhost-8501-2025-11-02-15_33_57.png)
+![Screenshot 3](screenshots/screencapture-localhost-8501-2025-11-02-15_34_57.png)
+![Screenshot 4](screenshots/screencapture-localhost-8501-2025-11-02-15_34_42.png)
+![Screenshot 5](screenshots/screencapture-localhost-8501-2025-11-02-15_34_34.png)
+![Screenshot 6](screenshots/screencapture-localhost-8501-2025-11-02-15_34_26.png)
+![Screenshot 7](screenshots/screencapture-localhost-8501-2025-11-02-15_34_18.png)
 
 ---
-### 7. 📄 Licença
+## 7. 📄 Licença
 
 Este projeto é distribuído sob a licença **MIT**. Veja o arquivo `LICENSE` para mais detalhes.
