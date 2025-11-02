@@ -1,6 +1,6 @@
 # Análise Comparativa de Modelos YOLO para Detecção de Vida Marinha
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python)
+![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
 ![Framework](https://img.shields.io/badge/Streamlit-F44D42?logo=streamlit)
 ![Library](https://img.shields.io/badge/Ultralytics-YOLO-00D4B2)
 ![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-orange)
@@ -140,11 +140,10 @@ streamlit run 03_results_analysis/08_streamlit_results_viewer.py
 
 Alternativamente, você pode usar os botões **“📊 Visualizar Resultados”** no Painel de Controle (GUI) ou no menu do console (CLI) para lançar o dashboard automaticamente.
 
----
 
-### 5. 📄 Licença
-Este projeto é distribuído sob a licença **MIT**. Veja o arquivo `LICENSE` para mais detalhes.
+##  5. Arquitetura
 
+![Diagrama do Pipeline](arquitetura/diagrama%20do%20pipeline.drawio.png)
 ### 6. Screenshots
 
 ![Screenshot 1](screenshots/screencapture-localhost-8501-2025-11-02-15_33_57.png)
@@ -153,4 +152,8 @@ Este projeto é distribuído sob a licença **MIT**. Veja o arquivo `LICENSE` pa
 ![Screenshot 4](screenshots/screencapture-localhost-8501-2025-11-02-15_34_34.png)
 ![Screenshot 5](screenshots/screencapture-localhost-8501-2025-11-02-15_34_26.png)
 ![Screenshot 6](screenshots/screencapture-localhost-8501-2025-11-02-15_34_18.png)
-```
+
+---
+### 7. 📄 Licença
+
+Este projeto é distribuído sob a licença **MIT**. Veja o arquivo `LICENSE` para mais detalhes.
