@@ -1,0 +1,2 @@
+Job_Name,Dataset,Base_Model,Status,mAP50_95,mAP50,Precision,Recall,F1_Score,Latency_ms,Training_Time_Min,Output_Dir,Error
+YOLOv8m_320px_10e,FishInvSplit,yolov8m.pt,Failed,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0045,N/A,"Dataset 'data/dataset_descompactado/FishInvSplit/data.yaml' error  Dataset 'data/dataset_descompactado/FishInvSplit/data.yaml' images not found, missing path 'D:\programas\datasets\FishInvSplit\valid\images' Note dataset download directory is 'D:\programas\datasets'. You can update this in 'C:\Users\patrik\AppData\Roaming\Ultralytics\settings.json'"

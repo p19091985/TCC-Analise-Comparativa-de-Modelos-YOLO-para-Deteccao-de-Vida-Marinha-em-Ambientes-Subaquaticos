@@ -5,14 +5,13 @@ Centraliza os hiperparâmetros e configurações para os scripts de treinamento.
 
 YOLO_CONFIG = {
                                
-    "IMG_SIZE": 320,
-    "NUM_EPOCHS": 10,
+    "IMG_SIZE": 640,
+    "NUM_EPOCHS": 100,
     "PATIENCE_EPOCHS": 100,
     "BATCH_SIZE": 16,
     "OPTIMIZER": "Adam",
     "DATASETS_TO_TRAIN": ['aquarium_pretrain','FishInvSplit','unificacaoDosOceanos'],
-
-    "TRAINING_JOBS": [
+        "TRAINING_JOBS": [
        {'modelo': 'YOLOv5n', 'base_model': 'yolov5n.pt'},
         {'modelo': 'YOLOv5s', 'base_model': 'yolov5s.pt'},
         {'modelo': 'YOLOv5m', 'base_model': 'yolov5m.pt'},
@@ -35,10 +34,10 @@ YOLO_CONFIG = {
 
 RTDETR_CONFIG = {
                                
-    "IMG_SIZE": 320,
-    "NUM_EPOCHS": 10,
+    "IMG_SIZE": 640,
+    "NUM_EPOCHS": 100,
     "PATIENCE_EPOCHS": 100,
-    "BATCH_SIZE": 8,
+    "BATCH_SIZE":16,
     "OPTIMIZER": "Adam",
     "LEARNING_RATE": 0.001,
 

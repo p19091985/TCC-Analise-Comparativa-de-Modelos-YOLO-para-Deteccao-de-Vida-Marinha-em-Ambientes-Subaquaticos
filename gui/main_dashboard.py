@@ -1,12 +1,3 @@
-"""
-Painel de Controle Central e Integrado para o Pipeline de Análise.
-Oferece controle granular sobre a execução de cada script individualmente.
-
-MODIFICADO:
-- Lança o visualizador Streamlit via navegador.
-- Exibe o Módulo 3 na árvore de scripts.
-- Permite executar o Módulo 3 a partir da árvore (via "Executar Selecionado(s)").
-"""
 import tkinter as tk
 from tkinter import scrolledtext, messagebox, ttk
 import threading
