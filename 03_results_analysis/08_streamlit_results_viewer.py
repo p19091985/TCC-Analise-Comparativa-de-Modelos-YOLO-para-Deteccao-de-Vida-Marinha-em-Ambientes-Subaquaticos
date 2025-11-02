@@ -1,15 +1,4 @@
-"""
-Módulo 3: Visualizador de Resultados em Streamlit.
 
-Portabilidade do 'results_viewer.py' para uma interface web interativa
-com Streamlit, mantendo a lógica de visualização "Padrão" e "Orientador".
-
-MODIFICAÇÃO (UX/UI v3.1 - "Estado da Arte"):
-- Corrigidos todos os avisos de depreciação (DeprecationWarning) do Streamlit
-  removendo 'use_container_width' dos gráficos Altair.
-- Corrigido o aviso futuro (FutureWarning) do Pandas ao adicionar
-  'future_stack=True' na função .stack().
-"""
 import streamlit as st
 import pandas as pd
 import os

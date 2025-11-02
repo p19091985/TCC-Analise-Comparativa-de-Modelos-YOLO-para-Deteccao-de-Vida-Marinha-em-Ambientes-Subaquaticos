@@ -1,6 +1,4 @@
-"""
-Centraliza todos os caminhos de diretórios para fácil manutenção e consistência.
-"""
+
 import os
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -1,7 +1,4 @@
-"""
-Módulo 2, Etapa 1: Treinamento dos modelos da família YOLO.
-(Baseado no arquivo original: yoloV_5-11.py)
-"""
+
 import sys
 import logging
 import datetime

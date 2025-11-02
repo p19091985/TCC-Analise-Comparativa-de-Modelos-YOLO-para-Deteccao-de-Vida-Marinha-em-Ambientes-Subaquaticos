@@ -1,8 +1,5 @@
                        
-"""
-Módulo centralizado para configuração de logs.
-Evita a repetição do código de setup de logging em todos os scripts.
-"""
+
 import logging
 import sys
 import os
@@ -10,10 +7,7 @@ import datetime
 from config.paths import LOGS_DIR
 
 def setup_logging(logger_name: str, script_filename: str) -> logging.Logger:
-    """
-    Configura e retorna um logger que salva em arquivo e exibe no console.
-    O nome do arquivo de log é derivado do nome do script que o chama.
-    """
+
     os.makedirs(LOGS_DIR, exist_ok=True)
 
     script_name_no_ext = os.path.splitext(os.path.basename(script_filename))[0]

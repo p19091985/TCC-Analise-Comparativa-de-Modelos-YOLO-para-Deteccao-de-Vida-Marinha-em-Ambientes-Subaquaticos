@@ -1,7 +1,4 @@
                        
-"""
-Centraliza os hiperparâmetros e configurações para os scripts de treinamento.
-"""
 
 YOLO_CONFIG = {
                                

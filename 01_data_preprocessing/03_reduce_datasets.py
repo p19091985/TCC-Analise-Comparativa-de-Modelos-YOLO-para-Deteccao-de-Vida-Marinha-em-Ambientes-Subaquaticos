@@ -1,8 +1,5 @@
                        
-"""
-Módulo 1, Etapa 3 (Opcional): Redução de datasets para testes rápidos.
-(Baseado no arquivo original: reduzir_dataset.py)
-"""
+
 import os
 import random
 import sys

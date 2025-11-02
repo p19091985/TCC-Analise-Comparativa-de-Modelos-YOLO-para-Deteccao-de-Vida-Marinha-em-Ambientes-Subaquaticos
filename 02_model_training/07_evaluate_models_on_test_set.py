@@ -1,7 +1,4 @@
-"""
-Módulo 2, Etapa 2: Avaliação final dos modelos treinados no conjunto de teste.
-(Baseado no arquivo original: avaliacao_test_com_modelo.py)
-"""
+
 import sys
 import json
 import logging

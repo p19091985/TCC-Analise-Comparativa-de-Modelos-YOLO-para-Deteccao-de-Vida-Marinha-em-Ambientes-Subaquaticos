@@ -1,9 +1,5 @@
                        
-"""
-Módulo 1, Etapa 4: Unificação inteligente de datasets YOLO.
-Gera um dataset 'unificacaoDosOceanos' combinando múltiplos datasets de origem
-e cria um arquivo data.yaml com caminhos relativos corretos para portabilidade.
-"""
+
 import os
 import sys
 import logging

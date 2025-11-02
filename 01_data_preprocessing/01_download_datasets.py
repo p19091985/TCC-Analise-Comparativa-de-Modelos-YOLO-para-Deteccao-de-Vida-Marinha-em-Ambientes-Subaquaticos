@@ -1,9 +1,4 @@
-                       
-"""
-Módulo 1, Etapa 1: Download e descompactação de datasets.
-(Baseado no arquivo original: preparação_de_dados.py)
-VERSÃO COM LÓGICA DE DESCOMPACTAÇÃO CORRIGIDA.
-"""
+
 import os
 import sys
 import requests

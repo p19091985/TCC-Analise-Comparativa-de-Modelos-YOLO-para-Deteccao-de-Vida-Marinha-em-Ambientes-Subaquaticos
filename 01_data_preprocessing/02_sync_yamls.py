@@ -1,9 +1,4 @@
-                       
-"""
-Módulo 1, Etapa 2: Sincronização de arquivos de configuração YAML.
-Esta versão gera os arquivos data.yaml com caminhos RELATIVOS corretos
-a partir da raiz do projeto, garantindo portabilidade.
-"""
+
 import os
 import sys
 import logging

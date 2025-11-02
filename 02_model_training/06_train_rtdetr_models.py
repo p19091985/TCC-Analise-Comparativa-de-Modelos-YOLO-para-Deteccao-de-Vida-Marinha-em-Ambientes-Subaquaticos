@@ -1,7 +1,4 @@
-"""
-Módulo 2, Etapa 1: Treinamento dos modelos da família RT-DETR.
-(Baseado no arquivo original: RT-DETR-L.py)
-"""
+
 import sys
 import logging
 import datetime
