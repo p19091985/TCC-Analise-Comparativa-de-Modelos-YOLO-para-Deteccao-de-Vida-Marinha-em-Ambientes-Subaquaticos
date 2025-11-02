@@ -129,7 +129,7 @@ python gui/run_pipeline_refactored.py --no-reduce
 
 ---
 
-## 📊 4. Visualizando os Resultados
+### 📊 4. Visualizando os Resultados
 Após a execução do Módulo 2 (`07_evaluate_models_on_test_set.py`), os relatórios finais (`.txt`) são salvos em `output/reports/`.
 
 Para visualizar o dashboard de resultados e os gráficos comparativos, execute o painel **Streamlit**:
@@ -142,26 +142,15 @@ Alternativamente, você pode usar os botões **“📊 Visualizar Resultados”*
 
 ---
 
-## 📄 Licença
+### 5. 📄 Licença
 Este projeto é distribuído sob a licença **MIT**. Veja o arquivo `LICENSE` para mais detalhes.
 
----
+### 6. Screenshots
 
-## 🤝 Como Contribuir
-Contribuições são bem-vindas! Se você encontrar um bug ou tiver uma sugestão, por favor, abra uma *Issue*.
-
-Para contribuir com código:
-
-```bash
-# Faça um Fork do repositório
-# Crie uma nova branch
-git checkout -b feature/sua-feature
-
-# Faça o commit de suas mudanças
-git commit -m 'Adiciona sua-feature'
-
-# Envie para sua branch
-git push origin feature/sua-feature
-
-# Abra um Pull Request
+![Screenshot 1](screenshots/screencapture-localhost-8501-2025-11-02-15_33_57.png)
+![Screenshot 2](screenshots/screencapture-localhost-8501-2025-11-02-15_34_57.png)
+![Screenshot 3](screenshots/screencapture-localhost-8501-2025-11-02-15_34_42.png)
+![Screenshot 4](screenshots/screencapture-localhost-8501-2025-11-02-15_34_34.png)
+![Screenshot 5](screenshots/screencapture-localhost-8501-2025-11-02-15_34_26.png)
+![Screenshot 6](screenshots/screencapture-localhost-8501-2025-11-02-15_34_18.png)
 ```
