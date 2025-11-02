@@ -149,7 +149,7 @@ Alternativamente, você pode usar os botões **“📊 Visualizar Resultados”*
 ![Diagrama do Pipeline](arquitetura/diagrama%20do%20pipeline.drawio.png)
 
 ## 6. Screenshots
-![Screenshot 1](screenshots/Captura de tela em 2025-11-02 20-28-09.png)
+![Screenshot 1](screenshots/screencapture-localhost-8501-2025-11-02-15_33_57L.png)
 ![Screenshot 2](screenshots/screencapture-localhost-8501-2025-11-02-15_33_57.png)
 ![Screenshot 3](screenshots/screencapture-localhost-8501-2025-11-02-15_34_57.png)
 ![Screenshot 4](screenshots/screencapture-localhost-8501-2025-11-02-15_34_42.png)
