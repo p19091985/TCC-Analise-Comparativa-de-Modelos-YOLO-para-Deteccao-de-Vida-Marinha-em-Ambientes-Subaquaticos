@@ -1,4 +1,3 @@
-
 import sys
 import json
 import logging
@@ -19,16 +18,15 @@ except ImportError:
     sys.exit(1)
 
 from config.paths import RUNS_DIR, UNZIPPED_DIR, REPORTS_DIR, ROOT_DIR, EVAL_DIR
-                            
 from utils.logger_config import setup_logging
+
 
 class ValidadorAbsoluto:
 
     def __init__(self):
-                                                        
         self.diretorio_runs = Path(RUNS_DIR)
         self.diretorio_datasets = Path(UNZIPPED_DIR)
-                                                       
+
         self.reports_dir = Path(REPORTS_DIR)
         self.root_dir = Path(ROOT_DIR)
         self.timestamp_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -39,9 +37,7 @@ class ValidadorAbsoluto:
 
         try:
             os.makedirs(self.reports_dir, exist_ok=True)
-                                           
-            os.makedirs(self.eval_dir, exist_ok=True)                                          
-                                        
+            os.makedirs(self.eval_dir, exist_ok=True)
         except Exception as e:
             self.logger.critical(f"Não foi possível criar diretórios de saída: {e}", exc_info=True)
             sys.exit(1)
@@ -159,20 +155,38 @@ class ValidadorAbsoluto:
             self.logger.info(
                 f"Iniciando validação no split 'test' do dataset '{nome_dataset}' usando dispositivo '{dispositivo}'.")
 
+            # FIX CRÍTICO: workers=0 evita o erro de pickle no RT-DETRDataset
             metricas = modelo.val(data=detalhes_dataset['caminho_yaml_relativo'],
                                   split='test',
                                   device=dispositivo,
-                                  project=str(self.eval_dir),                                
-                                  name=f"{run_dir.name}_EVAL",                                  
+                                  project=str(self.eval_dir),
+                                  name=f"{run_dir.name}_EVAL",
                                   exist_ok=True,
-                                  verbose=False)
+                                  verbose=False,
+                                  workers=0)
 
             self.logger.info("Validação concluída com sucesso. Coletando métricas.")
 
+            # --- CÁLCULO F1-SCORE ---
+            precision = metricas.box.mp
+            recall = metricas.box.mr
+
+            # Evita divisão por zero se ambos forem 0
+            if (precision + recall) == 0:
+                f1_score = 0.0
+            else:
+                f1_score = 2 * (precision * recall) / (precision + recall)
+
             resultado.update({
                 "status": "SUCESSO",
-                "metricas_box": {"mAP50-95": metricas.box.map, "mAP50": metricas.box.map50, "mAP75": metricas.box.map75,
-                                 "precisao": metricas.box.mp, "recall": metricas.box.mr},
+                "metricas_box": {
+                    "mAP50-95": metricas.box.map,
+                    "mAP50": metricas.box.map50,
+                    "mAP75": metricas.box.map75,
+                    "precisao": precision,
+                    "recall": recall,
+                    "f1_score": f1_score
+                },
                 "metricas_velocidade_ms": metricas.speed
             })
             self.artefato_final["resultados_validacao"].append(resultado)
@@ -194,7 +208,9 @@ class ValidadorAbsoluto:
         self.logger.info(f"Salvando relatório em formato TXT (CSV) em: {caminho_arquivo}")
 
         DELIMITADOR = ";"
+        # Cabeçalho inclui f1_score
         cabecalho = ["nome_run", "status", "dataset_nome", "mAP50_95", "mAP50", "mAP75", "precisao", "recall",
+                     "f1_score",
                      "velocidade_preprocess_ms", "velocidade_inference_ms", "velocidade_postprocess_ms",
                      "mensagem_erro"]
 
@@ -208,23 +224,33 @@ class ValidadorAbsoluto:
                         velocidade = resultado.get("metricas_velocidade_ms", {})
                         dataset_nome = resultado.get("dataset", {}).get("nome_identificado", "N/A")
                         linha_dados = [
-                            resultado.get("nome_run", ""), resultado.get("status", "SUCESSO"), dataset_nome,
-                            f"{metricas.get('mAP50-95', 0.0):.5f}", f"{metricas.get('mAP50', 0.0):.5f}",
+                            resultado.get("nome_run", ""),
+                            resultado.get("status", "SUCESSO"),
+                            dataset_nome,
+                            f"{metricas.get('mAP50-95', 0.0):.5f}",
+                            f"{metricas.get('mAP50', 0.0):.5f}",
                             f"{metricas.get('mAP75', 0.0):.5f}",
-                            f"{metricas.get('precisao', 0.0):.5f}", f"{metricas.get('recall', 0.0):.5f}",
-                            f"{velocidade.get('preprocess', 0.0):.3f}", f"{velocidade.get('inference', 0.0):.3f}",
-                            f"{velocidade.get('postprocess', 0.0):.3f}", ""
+                            f"{metricas.get('precisao', 0.0):.5f}",
+                            f"{metricas.get('recall', 0.0):.5f}",
+                            f"{metricas.get('f1_score', 0.0):.5f}",
+                            f"{velocidade.get('preprocess', 0.0):.3f}",
+                            f"{velocidade.get('inference', 0.0):.3f}",
+                            f"{velocidade.get('postprocess', 0.0):.3f}",
+                            ""
                         ]
-                        f.write(DELIMITADOR.join(linha_dados) + "\n")                                      
+                        f.write(DELIMITADOR.join(linha_dados) + "\n")
                     else:
                         erro_msg = resultado.get('mensagem_erro', 'Erro desconhecido').replace("\n", " ").replace(
                             DELIMITADOR, ",")
                         dataset_nome = resultado.get("dataset", {}).get("nome_identificado", "N/A")
                         linha_dados = [
-                            resultado.get("nome_run", ""), resultado.get("status", "FALHA"), dataset_nome,
-                            "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", erro_msg
+                            resultado.get("nome_run", ""),
+                            resultado.get("status", "FALHA"),
+                            dataset_nome,
+                            "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
+                            erro_msg
                         ]
-                                                                
+
                         f.write(DELIMITADOR.join(linha_dados) + "\n")
             self.logger.info("Relatório salvo com sucesso.")
         except Exception:
@@ -246,10 +272,12 @@ class ValidadorAbsoluto:
         self.logger.info("PROCESSO DE VALIDAÇÃO ABSOLUTA FINALIZADO")
         self.logger.info("=" * 80)
 
+
 def main():
     """Ponto de entrada do script."""
     validador = ValidadorAbsoluto()
     validador.executar()
+
 
 if __name__ == "__main__":
     main()
